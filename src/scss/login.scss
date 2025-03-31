@@ -1,48 +1,142 @@
 .login-container {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   background: linear-gradient(135deg, #1890ff 0%, #722ed1 100%);
-  padding: 20px;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 150%;
+    height: 150%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+    animation: rotate 20s linear infinite;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+    animation: pulse 3s ease-in-out infinite;
+  }
 }
 
 .login-card {
   width: 100%;
   max-width: 400px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  margin: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
   background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 1;
+  transform: translateZ(0);
+
+  .ant-card-body {
+    padding: 32px;
+    position: relative;
+  }
+
+  .geolocation-icon {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 20px;
+    color: #1890ff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: scale(1.1);
+      color: #40a9ff;
+    }
+  }
 
   h1 {
     text-align: center;
     color: #1890ff;
-    margin-bottom: 24px;
-    font-size: 24px;
+    margin-bottom: 32px;
+    font-size: 28px;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
 
   .ant-form-item {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
   }
 
   .ant-input-affix-wrapper {
-    border-radius: 4px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #e8e8e8;
+    transition: all 0.3s ease;
+
+    &:hover, &:focus {
+      border-color: #1890ff;
+      box-shadow: 0 0 0 2px rgba(24,144,255,0.1);
+    }
+
+    .anticon {
+      color: #bfbfbf;
+    }
   }
 
   .ant-btn {
-    height: 40px;
-    border-radius: 4px;
+    height: 48px;
+    border-radius: 8px;
     font-size: 16px;
+    font-weight: 500;
+    background: linear-gradient(45deg, #1890ff 0%, #40a9ff 100%);
+    border: none;
+    box-shadow: 0 4px 12px rgba(24,144,255,0.3);
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(24,144,255,0.4);
+      background: linear-gradient(45deg, #40a9ff 0%, #69c0ff 100%);
+    }
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
   }
 }
 
 @media (max-width: 480px) {
   .login-card {
-    padding: 16px;
+    margin: 16px;
     
+    .ant-card-body {
+      padding: 24px;
+    }
+
     h1 {
-      font-size: 20px;
-      margin-bottom: 20px;
+      font-size: 24px;
+      margin-bottom: 24px;
     }
   }
 }
