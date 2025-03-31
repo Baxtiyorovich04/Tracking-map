@@ -1,0 +1,116 @@
+.home-layout {
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: 64px;
+
+  h1 {
+    margin: 0;
+    color: #000;
+    font-size: 18px;
+  }
+
+  .logout-button {
+    color: #ff4d4f;
+    font-size: 16px;
+    
+    &:hover {
+      color: #ff7875;
+    }
+  }
+}
+
+.site-sider {
+  background: #fff;
+  border-right: 1px solid #f0f0f0;
+  padding: 16px;
+
+  .time-selector {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 12px;
+
+    .date {
+      color: #666;
+    }
+  }
+
+  .courier-name {
+    margin-bottom: 16px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .export-button {
+    margin-bottom: 16px;
+    width: 100%;
+  }
+
+  .courier-list {
+    .courier-item {
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+
+      .courier-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .courier-details {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 4px;
+      }
+    }
+  }
+}
+
+.content {
+  padding: 16px;
+  background: #fff;
+
+  .search-container {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+
+    .search-input {
+      flex: 1;
+    }
+  }
+}
+
+.map-container {
+  height: calc(100vh - 64px - 80px);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #f0f0f0;
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 0 16px;
+    
+    h1 {
+      font-size: 16px;
+    }
+  }
+
+  .site-sider {
+    padding: 12px;
+  }
+
+  .content {
+    padding: 12px;
+  }
+}
