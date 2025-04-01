@@ -1,8 +1,9 @@
-import { Layout, Button, Input, List, Typography, TimePicker, Badge } from 'antd';
-import { LogoutOutlined, SearchOutlined, ExportOutlined, UserOutlined } from '@ant-design/icons';
+import { Layout, Button, Input, List, Typography, DatePicker, Badge, Drawer } from 'antd';
+import { LogoutOutlined, SearchOutlined, ExportOutlined, UserOutlined, MenuOutlined } from '@ant-design/icons';
 import { YMaps, Map, Placemark, Polyline } from '@pbe/react-yandex-maps';
 import { useAuth } from '../context/AuthContext';
 import dayjs from 'dayjs';
+import { useState } from 'react';
 import '../scss/home.scss';
 
 const { Header, Content, Sider } = Layout;
@@ -10,7 +11,8 @@ const { Text } = Typography;
 
 const Home = () => {
   const { logout } = useAuth();
-
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [selectedDateTime, setSelectedDateTime] = useState(dayjs());
 
   const couriers = [
     {
@@ -27,16 +29,76 @@ const Home = () => {
       coordinates: [41.3115, 69.2401],
       status: "Был в Т.Т."
     },
-  
   ];
 
-
   const mapCenter = [41.2995, 69.2401];
+
+  const handleDateTimeChange = (date) => {
+    if (date) {
+      setSelectedDateTime(date);
+    }
+  };
+
+  const SidebarContent = () => (
+    <div className="sidebar-content">
+      <div className="time-selector">
+        <DatePicker
+          showTime
+          format="DD/MM/YYYY HH:mm"
+          value={selectedDateTime}
+          onChange={handleDateTimeChange}
+          className="datetime-picker"
+        />
+      </div>
+      <div className="courier-name">
+        <Text strong>Sarvar</Text>
+      </div>
+      <Button icon={<ExportOutlined />} className="export-button">
+        Экспорт
+      </Button>
+      <List
+        className="courier-list"
+        itemLayout="horizontal"
+        dataSource={couriers}
+        renderItem={(item, index) => (
+          <List.Item className="courier-item">
+            <List.Item.Meta
+              avatar={
+                <Badge status="success" />
+              }
+              title={
+                <div className="courier-header">
+                  <Text>{`${index + 1}. ${item.name}`}</Text>
+                  <Button type="link" icon={<UserOutlined />} size="small">
+                    профиль
+                  </Button>
+                </div>
+              }
+              description={
+                <div className="courier-details">
+                  <Text type="secondary">{item.time}</Text>
+                  <Text type="success">{item.status}</Text>
+                </div>
+              }
+            />
+          </List.Item>
+        )}
+      />
+    </div>
+  );
 
   return (
     <Layout className="home-layout">
       <Header className="header">
-        <h1>Маршрут доставщика: Sarvar</h1>
+        <div className="header-left">
+          <Button 
+            type="text" 
+            icon={<MenuOutlined />} 
+            className="menu-button"
+            onClick={() => setDrawerVisible(true)}
+          />
+          <h1>Маршрут доставщика: Sarvar</h1>
+        </div>
         <Button 
           type="text" 
           icon={<LogoutOutlined />} 
@@ -48,44 +110,7 @@ const Home = () => {
       </Header>
       <Layout>
         <Sider width={300} className="site-sider">
-          <div className="time-selector">
-            <TimePicker defaultValue={dayjs('17:10', 'HH:mm')} format="HH:mm" />
-            <Text className="date">03/16/2025</Text>
-          </div>
-          <div className="courier-name">
-            <Text strong>Sarvar</Text>
-          </div>
-          <Button icon={<ExportOutlined />} className="export-button">
-            Экспорт
-          </Button>
-          <List
-            className="courier-list"
-            itemLayout="horizontal"
-            dataSource={couriers}
-            renderItem={(item, index) => (
-              <List.Item className="courier-item">
-                <List.Item.Meta
-                  avatar={
-                    <Badge status="success" />
-                  }
-                  title={
-                    <div className="courier-header">
-                      <Text>{`${index + 1}. ${item.name}`}</Text>
-                      <Button type="link" icon={<UserOutlined />} size="small">
-                        профиль
-                      </Button>
-                    </div>
-                  }
-                  description={
-                    <div className="courier-details">
-                      <Text type="secondary">{item.time}</Text>
-                      <Text type="success">{item.status}</Text>
-                    </div>
-                  }
-                />
-              </List.Item>
-            )}
-          />
+          <SidebarContent />
         </Sider>
         <Content className="content">
           <div className="search-container">
@@ -127,6 +152,16 @@ const Home = () => {
           </div>
         </Content>
       </Layout>
+      <Drawer
+        title="Меню"
+        placement="left"
+        onClose={() => setDrawerVisible(false)}
+        open={drawerVisible}
+        className="mobile-drawer"
+        width={300}
+      >
+        <SidebarContent />
+      </Drawer>
     </Layout>
   );
 };

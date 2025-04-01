@@ -11,15 +11,41 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   height: 64px;
 
-  h1 {
-    margin: 0;
-    color: #000;
-    font-size: 18px;
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    height: 100%;
+
+    .menu-button {
+   
+      font-size: 20px;
+      color: #000;
+      height: 100%;
+      padding: 0 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      display: none;
+    }
+
+    h1 {
+      margin: 0;
+      color: #000;
+      font-size: 18px;
+      line-height: 1.2;
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
   }
 
   .logout-button {
     color: #ff4d4f;
     font-size: 16px;
+    height: 100%;
+    display: flex;
+    align-items: center;
     
     &:hover {
       color: #ff7875;
@@ -31,15 +57,18 @@
   background: #fff;
   border-right: 1px solid #f0f0f0;
   padding: 16px;
+  transition: all 0.3s ease;
+}
 
+.sidebar-content {
   .time-selector {
     display: flex;
     align-items: center;
     margin-bottom: 16px;
     gap: 12px;
 
-    .date {
-      color: #666;
+    .datetime-picker {
+      width: 100%;
     }
   }
 
@@ -78,6 +107,7 @@
 .content {
   padding: 16px;
   background: #fff;
+  transition: all 0.3s ease;
 
   .search-container {
     display: flex;
@@ -97,20 +127,45 @@
   border: 1px solid #f0f0f0;
 }
 
+.mobile-drawer {
+  .ant-drawer-content-wrapper {
+    @media (min-width: 769px) {
+      display: none;
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .header {
     padding: 0 16px;
     
-    h1 {
-      font-size: 16px;
+    .header-left {
+      .menu-button {
+        display: flex;
+        margin: 0 -8px;
+      }
+
+      h1 {
+        font-size: 16px;
+        line-height: 1.2;
+      }
     }
   }
 
   .site-sider {
-    padding: 12px;
+    display: none;
   }
 
   .content {
     padding: 12px;
+    margin-left: 0 !important;
+  }
+
+  .time-selector {
+    .datetime-picker {
+      .ant-picker {
+        width: 100%;
+      }
+    }
   }
 }
