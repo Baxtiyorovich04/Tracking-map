@@ -1,9 +1,9 @@
-import { Layout, Button, Input, List, Typography, DatePicker, Badge, Drawer } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Layout, Button, Input, List, Typography, DatePicker, Badge, Drawer, Select } from 'antd';
 import { LogoutOutlined, SearchOutlined, ExportOutlined, UserOutlined, MenuOutlined } from '@ant-design/icons';
 import { YMaps, Map, Placemark, Polyline } from '@pbe/react-yandex-maps';
 import { useAuth } from '../context/AuthContext';
 import dayjs from 'dayjs';
-import { useState } from 'react';
 import '../scss/home.scss';
 
 const { Header, Content, Sider } = Layout;
@@ -13,34 +13,70 @@ const Home = () => {
   const { logout } = useAuth();
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [selectedDateTime, setSelectedDateTime] = useState(dayjs());
-
+  const [selectedCourier, setSelectedCourier] = useState(null);
+  
+  // Пример данных курьеров с их маршрутами
   const couriers = [
     {
       id: 1,
       name: "Imonali Yuldashev BILTON",
       time: "10:47:22",
       coordinates: [41.2995, 69.2401],
-      status: "Был в Т.Т."
+      status: "Был в Т.Т.",
+      route: [
+        [41.2995, 69.2401],
+        [41.3015, 69.2451],
+        [41.3045, 69.2501],
+        [41.3075, 69.2551],
+      ]
     },
     {
       id: 2,
       name: "Eldor Hamid",
       time: "11:48:12",
       coordinates: [41.3115, 69.2401],
-      status: "Был в Т.Т."
+      status: "Был в Т.Т.",
+      route: [
+        [41.3115, 69.2401],
+        [41.3135, 69.2451],
+        [41.3165, 69.2501],
+        [41.3195, 69.2551],
+      ]
     },
   ];
 
+  // Центр карты - Ташкент
   const mapCenter = [41.2995, 69.2401];
 
   const handleDateTimeChange = (date) => {
     if (date) {
       setSelectedDateTime(date);
+      // Здесь можно добавить обновление маршрутов при изменении времени
     }
   };
 
+  const handleCourierChange = (courierId) => {
+    setSelectedCourier(courierId);
+  };
+
+  const selectedCourierData = couriers.find(c => c.id === selectedCourier);
+
   const SidebarContent = () => (
     <div className="sidebar-content">
+      <div className="courier-selector">
+        <Select
+          placeholder="Выберите курьера"
+          style={{ width: '100%' }}
+          onChange={handleCourierChange}
+          value={selectedCourier}
+        >
+          {couriers.map(courier => (
+            <Select.Option key={courier.id} value={courier.id}>
+              {courier.name}
+            </Select.Option>
+          ))}
+        </Select>
+      </div>
       <div className="time-selector">
         <DatePicker
           showTime
@@ -50,9 +86,11 @@ const Home = () => {
           className="datetime-picker"
         />
       </div>
-      <div className="courier-name">
-        <Text strong>Sarvar</Text>
-      </div>
+      {selectedCourierData && (
+        <div className="courier-name">
+          <Text strong>{selectedCourierData.name}</Text>
+        </div>
+      )}
       <Button icon={<ExportOutlined />} className="export-button">
         Экспорт
       </Button>
@@ -61,7 +99,10 @@ const Home = () => {
         itemLayout="horizontal"
         dataSource={couriers}
         renderItem={(item, index) => (
-          <List.Item className="courier-item">
+          <List.Item 
+            className={`courier-item ${item.id === selectedCourier ? 'selected' : ''}`}
+            onClick={() => handleCourierChange(item.id)}
+          >
             <List.Item.Meta
               avatar={
                 <Badge status="success" />
@@ -97,7 +138,11 @@ const Home = () => {
             className="menu-button"
             onClick={() => setDrawerVisible(true)}
           />
-          <h1>Маршрут доставщика: Sarvar</h1>
+          <h1>
+            {selectedCourierData 
+              ? `Маршрут доставщика: ${selectedCourierData.name}`
+              : 'Выберите курьера'}
+          </h1>
         </div>
         <Button 
           type="text" 
@@ -131,22 +176,27 @@ const Home = () => {
                 width="100%"
                 height="100%"
               >
-                {couriers.map((courier) => (
-                  <Placemark
-                    key={courier.id}
-                    geometry={courier.coordinates}
-                    options={{
-                      preset: 'islands#blueDeliveryIcon',
-                    }}
-                  />
+                {couriers.map(courier => (
+                  <React.Fragment key={courier.id}>
+                    <Placemark
+                      geometry={courier.coordinates}
+                      options={{
+                        preset: 'islands#blueDeliveryIcon',
+                        iconColor: courier.id === selectedCourier ? '#1890ff' : '#8c8c8c',
+                      }}
+                    />
+                    {courier.route && (
+                      <Polyline
+                        geometry={courier.route}
+                        options={{
+                          strokeColor: courier.id === selectedCourier ? '#1890ff' : '#d9d9d9',
+                          strokeWidth: courier.id === selectedCourier ? 4 : 2,
+                          strokeOpacity: courier.id === selectedCourier ? 0.8 : 0.4,
+                        }}
+                      />
+                    )}
+                  </React.Fragment>
                 ))}
-                <Polyline
-                  geometry={couriers.map(c => c.coordinates)}
-                  options={{
-                    strokeColor: '#1890ff',
-                    strokeWidth: 4,
-                  }}
-                />
               </Map>
             </YMaps>
           </div>
